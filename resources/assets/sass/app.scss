@@ -1,0 +1,96 @@
+
+// Fonts
+//@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+//@import url("https://fonts.googleapis.com/css?family=Tajawal:300,400,600");
+
+// Fonts
+@import "fonts";
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+body{
+  background-color: $body-backg;
+  direction: rtl;
+  font-family: 'Tajawal', Raleway, serif;
+  min-height:100%;
+  margin:0;
+}
+//'Tajawal'
+
+.app-card-login{
+  margin: 0 auto;
+  max-width: 330px;
+  width:100%
+}
+.app-h6-login{
+  color: darkred;
+}
+.app-input-login::placeholder{
+  font-size: 10px!important;
+}
+.app-container-login{
+  margin-top: 10%;
+  button{
+    height: 36px;
+  }
+}
+
+.app-container-main{
+  position: relative;
+  min-height: 100vh;
+}
+
+.app-img-login{
+  padding: 10px;
+}
+
+.app-footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.app-content-main{
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+.app-card-table{
+  padding: 0.5rem;
+    td{
+      padding: 0;
+    }
+}
+.app-filter-green{
+  filter: invert(40%) sepia(41%) saturate(6812%) hue-rotate(74deg) brightness(100%) contrast(94%);
+}
+.app-filter-blue{
+filter: invert(26%) sepia(100%) saturate(2413%) hue-rotate(202deg) brightness(107%) contrast(102%);
+}
+
+// xl 1200px
+// lg 992px
+// md 768px
+// sm 576px
+@media screen and (max-width: 991px) {
+  .app-tb-td{
+  flex: 0 0 40%;
+  width: 40%;
+  }
+}
+@media screen and (min-width: 991px) {
+.app-tb-td{
+    flex: 0 0 20%;
+    width: 20%;
+  }
+}
+@media screen and (max-width: 768px) {
+.app-btn-mb{
+  padding-bottom: 10px;
+}
+}

@@ -1,0 +1,6 @@
+[16-Feb-2021 11:39:33 Asia/Amman] PHP Warning:  require(/volume1/web/laravel/public/../vendor/autoload.php): failed to open stream: No such file or directory in /volume1/web/laravel/public/index.php on line 24
+[16-Feb-2021 11:39:33 Asia/Amman] PHP Stack trace:
+[16-Feb-2021 11:39:33 Asia/Amman] PHP   1. {main}() /volume1/web/laravel/public/index.php:0
+[16-Feb-2021 11:39:33 Asia/Amman] PHP Fatal error:  require(): Failed opening required '/volume1/web/laravel/public/../vendor/autoload.php' (include_path='.:/usr/share/pear') in /volume1/web/laravel/public/index.php on line 24
+[16-Feb-2021 11:39:33 Asia/Amman] PHP Stack trace:
+[16-Feb-2021 11:39:33 Asia/Amman] PHP   1. {main}() /volume1/web/laravel/public/index.php:0
