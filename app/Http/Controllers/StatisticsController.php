@@ -34,6 +34,7 @@ class StatisticsController extends Controller
                 $datestart . ' 23:59:59'
             ]);
 
+
         if($data !== null) {
 
             $prodArr = $data->get()->count();
@@ -81,7 +82,7 @@ class StatisticsController extends Controller
         $date = Carbon::createFromTimeString($request->get('datestart') . ' 00:00:00');
         $dateDateString = $date->toDateString();
 
-        $prodinfo = production::query()->selectRaw('id_emp, production, date(updated_at) as date')
+        $prodinfo = production::query()->selectRaw('id_emp, production,group_name,period, date(updated_at) as date')
             ->whereRaw('updated_at >= ? and updated_at < ? + INTERVAL 1 DAY',
                 [$dateDateString, $dateDateString])->get();
 
@@ -98,12 +99,13 @@ class StatisticsController extends Controller
         return redirect('statistics')->with('error', 'الملف فارغ، لايوجد بيانات لموظفي الإنتاج اليوم.');
     }
 
-    public function downloadFileMonth()
+    public function downloadFileMonth(Request $request)
     {
+
         // fetch employee
         $emp = production::query()->select('productions.id_emp','employee_names.name','productions.group_name','productions.period', 'employee_names.all_production')
-            ->selectRaw('GROUP_CONCAT(productions.production) as production')
-            ->selectRaw('GROUP_CONCAT(DAY(productions.updated_at)) as updated')
+            ->selectRaw('GROUP_CONCAT((productions.production)) as production')
+            ->selectRaw(' GROUP_CONCAT(DAY(productions.updated_at)) as updated')
             ->join('employee_names','productions.id_emp','=','employee_names.id_emp')
             ->groupBy(['id_emp'])->get();
 

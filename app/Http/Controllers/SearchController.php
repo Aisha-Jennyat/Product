@@ -99,13 +99,15 @@ class SearchController extends Controller
     public function store(Request $request)
     {
 
-//        dd($request->all());
+//       dd($request->all());
         // max:4 when numeric -> number      <= 4
         // max"4 when string  -> char length <= 4
-        $validator = Validator::make($request->only(['id_emp','production']),
+        $validator = Validator::make($request->only(['id_emp','production','group_name','period']),
             [
             'id_emp'     => 'required|numeric|max:4294967295',
             'production' => 'required|numeric|max:4294967295',
+            'group_name' => 'required',
+             'period' => 'required'
             ],[
             'required' => 'الرجاء قم بملئ الحقل.',
             'numeric' => 'الرجاء أدخل قيمة رقمية فقط.',
@@ -117,6 +119,7 @@ class SearchController extends Controller
             ],[
             'date_format' => 'الرجاء قم بإدخال تاريخ صحيح.',
             'before' => 'لايمكن إدخال تاريخ بعد تاريخ اليوم.'
+
         ]);
 
         // حفظ التاريخ في قاعدة البيانات في جدول dateviews
@@ -173,7 +176,7 @@ class SearchController extends Controller
                     // القيمة القديمة قبل التحديث من أجل طرحها من قيمة الانتاج الكلي واضافة القيمة الجديدة
                     $oldValue = $data->select('production')->get()->first()['production'];
 
-//- $oldValue شلتا من السطر176
+//- $oldValue شلتا من السطر193
 
                     $data->update([
                         'id_emp' => $request->get('id_emp'),
@@ -267,5 +270,135 @@ class SearchController extends Controller
         return view('production')
             ->with('messageStart', 'يرجى البحث عن الموظف إما بالرقم الوظيفي أو بالاسم.')
             ->with('navProduction', 'active');
+    }
+
+    public function editProduction(Request $request)
+    {
+//        dd($request->all());
+//        return 'Hello';
+        $validator2 = Validator::make($request->only(['id_emp','production','group_name','period']),
+            [
+                'id_emp'     => 'required|numeric|max:4294967295',
+                'production' => 'required|numeric|max:4294967295',
+                'group_name' => 'required',
+                'period' => 'required'
+            ],[
+                'required' => 'الرجاء قم بملئ الحقل.',
+                'numeric' => 'الرجاء أدخل قيمة رقمية فقط.',
+                'max' => 'الرقم الذي أدخلته أكبر من المتوقع يرجى إدخال رقم أقل'
+            ]);
+
+        $validatorDate = Validator::make($request->only(['date_value']), [
+            'date_value' => 'required|date_format:Y-m-d|before:today +1 day'
+        ],[
+            'date_format' => 'الرجاء قم بإدخال تاريخ صحيح.',
+            'before' => 'لايمكن إدخال تاريخ بعد تاريخ اليوم.'
+
+        ]);
+
+
+        $dataColl = collect([['id_emp' => $request->get('id_emp'),
+            'name'   => $request->get('name'),
+            'group_name'   => $request->get('group_name'),
+            'period'   => $request->get('period'),
+            'production'   => $request->get('production'),
+            'all_production' => $request->get('all_production')]]);
+
+        if($validator2->fails())
+            return view('production')
+                ->with('data', $dataColl)
+                ->with('old', $request->get('search'))
+                ->withErrors($validator2)
+                ->with('navProduction', 'active')
+                ->with('date_value', $request->get('date_value'));
+
+        elseif($validatorDate->fails())
+            return view('production')
+                ->with('data', $dataColl)
+                ->with('old', $request->get('search'))
+                ->withErrors($validatorDate)
+                ->with('navProduction', 'active')
+                ->with('date_value', $request->get('date_value'));
+
+
+
+        else
+        {
+            // كائن يقوم بإعطاء الوقت
+            $carbon = new Carbon();
+            $carbon->setTimezone('Asia/Damascus');
+
+            $dateDateTime =  Carbon::createFromTimeString($request->get('date_value') . $carbon->toTimeString() );
+            $dateDateString = $dateDateTime->toDateString();
+
+            // جلب الصف المضاف اليوم فقط
+            $data = production::query()
+                ->where('id_emp', '=', $request->id_emp)
+                ->whereBetween('updated_at',[
+                    $dateDateString . ' 00:00:00',
+                    $dateDateString . ' 23:59:59'
+                ])
+                ->where('group_name' , '=', $request->group_name)
+                ->where('period' , '=', $request->period);
+
+            if($data !== null) {
+                $msg = '';
+                $state = true;
+
+                if ($data->count() > 0) {
+
+                    // القيمة القديمة قبل التحديث من أجل طرحها من قيمة الانتاج الكلي واضافة القيمة الجديدة
+                    $oldValue = $data->select('production')->get()->first()['production'];
+
+//- $oldValue
+
+                    $data->update([
+                        'id_emp' => $request->get('id_emp'),
+                        'production' => $request->get('production'),
+                        'group_name'   => $request->get('group_name'),
+                        'period'   => $request->get('period')
+                    ]);
+
+                    //طرح قيمة الإنتاج من الانتاج الكلي في جدول الأسماء
+                    $query = Employee_names::query()->where('id_emp',$request->id_emp);
+                    $allValue = $query->select('all_production')->first()['all_production'];
+
+                    $query->update([
+                        'all_production' => $allValue -$oldValue + $request->production
+                    ]);
+
+                    $query2 = production::query()->where('id_emp',$request->id_emp);
+                    $query2->update([
+                        'production' =>  $request->production
+
+                    ]);
+
+
+
+                    $msg = 'تم تحديث انتاج الموظف ' . $request->get('name') . ' إلى ' . $request->get('production');
+                }
+
+                $dataColl = collect([['id_emp' => $request->get('id_emp'),
+                    'name'   => $request->get('name'),
+                    'production'   => $request->get('production'),
+                    'group_name'   => $request->get('group_name'),
+                    'period'   => $request->get('period'),
+                    'all_production' => $query->select('all_production')->first()['all_production']]]);
+
+
+                return view('production')
+                    ->with('data', $dataColl)
+                    ->with('old', $request->get('search'))
+                    ->with(['message'=> $msg])
+                    ->with('state', $state)
+                    ->with('navProduction', 'active')
+                    ->with('date_value' , $request->get('date_value'));
+
+
+
+            }
+        }
+        return view('production')->withErrors(['خطأ، لم يتم تحديث المعلومات.'])->with('navProduction', 'active')
+            ->with('date_value' , $request->get('date_value'));
     }
 }

@@ -77,8 +77,6 @@
                                 </div>
                             </div>
 
-
-
                             <div class="col-12 text-danger text-right small mr-3">
                                 @if($errors->has('date_value'))
                                     <span>{{ $errors->first() }}</span>
@@ -86,9 +84,7 @@
                             </div>
                         </div>
 
-{{--                        <form id="group_form" method="GET" action="{{ route('SearchController@store',[$groups],true) }}">--}}
                          <div class="row">
-{{--                            <div class="form-group">--}}
                             <div class="col-12 text-right ">
                                 <label class="pr-3 pt-2"> رقم المجموعة:</label>
                                 <div class="form-row text-right pl-4 pr-3">
@@ -101,17 +97,16 @@
                                             <option value="الرابعة">المجموعة الرابعة</option>
                                             <option value="الخامسة">المجموعة الخامسة</option>
                                             <option value="السادسة">المجموعة السادسة</option>
-{{--                                            @foreach($getgroup as $group)--}}
-{{--                                                <option value="{{ $group->group_id }}"> {{$group->group_name}}</option>--}}
-{{--                                            @endforeach--}}
                                         </select>
+                                        @if($errors->has('group_name'))
+                                            <small class="small text-danger">{{ $errors->first() }}</small>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
-{{--                            </div>--}}
                          </div>
 
-{{--                        </form>--}}
+
                         <div class="row">
                             <div class="col-12 text-right ">
                                 <label class="pr-3 pt-2"> الوردية:</label>
@@ -120,11 +115,15 @@
                                         <div class="col-6">
                                             <input type="radio" name="period" id="period" value=" صباحية">
                                             <label class="pr-3 pt-2" >وردية صباحية</label>
+
                                         </div>
                                         <div class="col-6">
                                             <input type="radio" name="period" id="period" value=" مسائية">
                                             <label class="pr-3 pt-2" >وردية مسائية</label>
                                         </div>
+                                        @if($errors->has('period'))
+                                            <small class="small text-danger">{{ $errors->first() }}</small>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -177,9 +176,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
-                            @csrf
-                            <button type="submit" class="btn btn-primary btn-block mt-4">تحديث</button>
+
+                        <div class="row">
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-block mt-4">تحديث</button>
+                            </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
+                                    @csrf
+                                    <a href="{{action('SearchController@editProduction')}}" class="btn btn-primary btn-block mt-4">تعديل</a>
+{{--                                <button type="button" class="btn btn-primary btn-block mt-4" onclick="{{action('edit')}}">تعديل</button>--}}
+                            </div>
                         </div>
                     </form>
 

@@ -18,8 +18,9 @@ Route::group(['prefix' => 'production'], function (){
 
     Route::get ('/search', 'SearchController@production')->name('search');
     Route::post('/search', 'SearchController@search');
-    Route::post('/store', 'SearchController@store')->name('store');;
+    Route::post('/store', 'SearchController@store')->name('store');
     Route::get ('/store', 'SearchController@storeGet');
+    Route::get('/store', 'SearchController@editProduction');
 
 
     Route::get ('/delete', 'SearchController@production');
