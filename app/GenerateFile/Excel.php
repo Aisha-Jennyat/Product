@@ -4,6 +4,7 @@ namespace App\GenerateFile;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use phpDocumentor\Reflection\Types\Null_;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -16,8 +17,6 @@ class Excel
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'رقم التوظيف');
         $sheet->setCellValue('B1', 'الاسم الثلاثي');
-//        $sheet->setCellValue('C1', 'المجموعة');
-//        $sheet->setCellValue('D1', 'الوردية');
         $sheet->setCellValue('C1', 'الانتاج الكلي');
 
         $arr_data = [];
@@ -36,8 +35,6 @@ class Excel
 
             $arr_raw[0] = $arrTemp[$i]['id_emp'];
             $arr_raw[1] = $arrTemp[$i]['name'];
-//            $arr_raw[2] = $arrTemp[$i]['group_name'];
-//            $arr_raw[3] = $arrTemp[$i]['period'];
             $arr_raw[2] = $arrTemp[$i]['all_production'];
 
             $arrProduction = explode(',', $arrTemp[$i]['production']);
@@ -64,14 +61,26 @@ class Excel
 
     public static function generateFileThisDay(Collection $emp, String $filename)
     {
+//        dd($emp->all());
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'رقم التوظيف');
-        $sheet->setCellValue('B1', 'عدد الأمتار');
+        $sheet->setCellValue('B1', 'اسم الموظف');
         $sheet->setCellValue('C1', 'المجموعة');
         $sheet->setCellValue('D1', 'الوردية');
-        $sheet->setCellValue('E1', 'تاريخ الإنتاج');
-
+        $sheet->setCellValue('E1', 'الانتاج الأول');
+        $sheet->setCellValue('F1', 'الانتاج الثاني');
+        $sheet->setCellValue('G1', 'الانتاج الثالث');
+        $sheet->setCellValue('H1', 'الانتاج الرابع');
+        $sheet->setCellValue('I1', 'الانتاج الخامس');
+        $sheet->setCellValue('J1', 'الانتاج السادس');
+        $sheet->setCellValue('K1', 'الانتاج السابع');
+        $sheet->setCellValue('L1', 'الانتاج الثامن');
+        $sheet->setCellValue('M1', 'الانتاج التاسع');
+        $sheet->setCellValue('N1', 'الانتاج العاشر');
+        $sheet->setCellValue('O1', 'الانتاج اليومي');
+        $sheet->setCellValue('P1', 'تاريخ الإنتاج');
+//dd($emp->all());
         for ($i = 0; $i < $emp->count(); ++$i) {
             $sheet->fromArray($emp[$i]->toArray(), null, 'A' . ($i + 2));
         }

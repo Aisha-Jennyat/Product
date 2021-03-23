@@ -4,24 +4,18 @@
     @include('layouts.navbar')
 @endsection
 
-{{--<script>--}}
-{{--function getFormById(id, id_input, value) {--}}
-{{--    document.getElementById(id_input).value = value;--}}
-{{--    event.preventDefault();--}}
-{{--    document.getElementById(id).submit()--}}
-{{--}--}}
-{{--</script>--}}
-
 @section('content')
+{{--<script>--}}
+{{--    function addRow()--}}
+{{--    {--}}
+{{--        var parent = document.getElementById('production');--}}
+{{--        var child = document.getElementById('p1');--}}
+{{--        child.classList.add('mb-5');--}}
+{{--        var item = child.cloneNode(true);--}}
 
-{{--    <script type="text/javascript">--}}
-{{--        var mytextbox = document.getElementById('displayUser');--}}
-{{--        var mydropdown = document.getElementById('select_id');--}}
-{{--        mydropdown.onchange = function(){--}}
-{{--            mytextbox.value = mytextbox.value  + this.value; //to appened--}}
-{{--            mytextbox.innerHTML = this.value;--}}
-{{--        }--}}
-{{--    </script>--}}
+{{--        parent.appendChild(item);--}}
+{{--    }--}}
+{{--</script>--}}
 
     <div class="container">
         <div class="row justify-content-center">
@@ -39,29 +33,32 @@
                 </form>
 
                 @if($errors->has('search'))
-                <div class="col-12 text-right text-danger font-weight-bolder small">
-                    <span>
-                        {{ $errors->first('search') }}
-                    </span>
-                </div>
-                @endif
-{{--                @if($errors->has('production'))--}}
-{{--                    <div class="col-12 text-right font-weight-bolder small pl-4 mt-4">--}}
-{{--                        <div class="alert alert-danger">--}}
-{{--                            {{ $errors->first('production') }}--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                @endif--}}
-
-                @if(isset($message))
                     <div class="col-12 text-right mt-3 pl-4">
-                        <div class="alert alert-{{ ($state)?'success':'info' }} small">
-                            <img src="{{ asset('images/icons/' . ($state? 'update-icon.svg':'add.svg')) }}" class="app-filter-{{ ($state? 'green':'blue') }}" width="16px" >
+                        <div class="alert alert-{{ $state }} small">
+                            {{-- <img src="{{ asset('images/icons/' . ($icons? 'update-icon.svg':'add.svg')) }}" class="app-filter-{{ ($state? 'green':'blue') }}" width="16px" > --}}
                             <span class="mr-1">
                             {{ $message }}
                             </span>
                         </div>
                     </div>
+{{--                <div class="col-12 text-right text-danger font-weight-bolder small">--}}
+{{--                    <span>--}}
+{{--                        {{ $errors->first('search') }}--}}
+{{--                    </span>--}}
+{{--                </div>--}}
+                @endif
+
+
+                @if(isset($message))
+                    <div class="col-12 text-right mt-3 pl-4">
+                        <div class="alert alert-{{ $state }} small">
+                            {{-- <img src="{{ asset('images/icons/' . ($icons? 'update-icon.svg':'add.svg')) }}" class="app-filter-{{ ($state? 'green':'blue') }}" width="16px" > --}}
+                            <span class="mr-1">
+                            {{ $message }}
+                            </span>
+                        </div>
+                    </div>
+
                 @endif
 
                 @if(isset($data) )
@@ -139,7 +136,7 @@
                                                 <td width="10%">رقم الموظف</td>
                                                 <td width="30%">اسم الموظف</td>
                                                 <td width="10%">الإنتاج الكلي</td>
-                                                <td width="40%">الإنتاج الحالي</td>
+                                                <td width="40%">الإنتاج</td>
                                                 @if(request()->user()['grants'] == 'admin')
                                                 <td width="10%">الخيارات</td>
                                                 @endif
@@ -149,19 +146,26 @@
                                 </div>
                                 <div class="card-body app-card-table">
                                     <table class="table table-borderless text-center m-0">
-                                        <thead>
                                         <tr>
                                             <td width="10%"><span class="badge-pill badge-primary">{{ $data->first()['id_emp'] }}</span></td>
                                             <td width="30%">{{ $data->first()['name'] }}</td>
                                             <td width="10%"><span class="badge-pill badge-dark">{{ $data->first()['all_production'] }}</span></td>
-                                            <td width="40%" class="text-right">
+                                            <td width="40%" class="text-right pr-3 ">
                                                 <input type="text" name="id_emp" value="{{ $data->first()['id_emp'] }}" hidden>
                                                 <input type="text" name="name" value="{{ $data->first()['name'] }}" hidden>
                                                 <input type="text" name="all_production" value="{{ $data->first()['all_production'] }}" hidden>
-                                                <input type="text" class="form-control" name="production">
-                                                @if($errors->has('production'))
-                                                <small class="small text-danger">{{ $errors->first() }}</small>
-                                                @endif
+                                                <input type="text" name="daily_production" value="{{ $data->first()['daily_production'] }}" hidden>
+                                                <input type="text" class="form-control" name="pro1" >
+                                                <input type="text" class="form-control" name="pro2" >
+                                                <input type="text" class="form-control" name="pro3" >
+                                                <input type="text" class="form-control" name="pro4" >
+                                                <input type="text" class="form-control" name="pro5" >
+                                                <input type="text" class="form-control" name="pro6" >
+                                                <input type="text" class="form-control" name="pro7" >
+                                                <input type="text" class="form-control" name="pro8" >
+                                                <input type="text" class="form-control" name="pro9" >
+                                                <input type="text" class="form-control" name="pro10" >
+
                                             </td>
                                             @if(request()->user()['grants'] == 'admin')
                                             <td width="10%">
@@ -171,21 +175,15 @@
                                             </td>
                                             @endif
                                         </tr>
-                                        </thead>
                                     </table>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
+                            <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12 mr-3">
                                 @csrf
-                                <button type="submit" class="btn btn-primary btn-block mt-4">تحديث</button>
-                            </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
-                                    @csrf
-                                    <a href="{{action('SearchController@editProduction')}}" class="btn btn-primary btn-block mt-4">تعديل</a>
-{{--                                <button type="button" class="btn btn-primary btn-block mt-4" onclick="{{action('edit')}}">تعديل</button>--}}
+                                <button type="submit" class="btn btn-primary btn-block mt-4">حساب الإنتاج اليومي</button>
                             </div>
                         </div>
                     </form>
